@@ -1,0 +1,81 @@
+2021-07-28 16:14:30,058 - model.pytorch.dcrnn_supervisor - INFO - Log directory: data/model
+2021-07-28 16:15:10,702 - model.pytorch.dcrnn_supervisor - INFO - Log directory: data/model
+2021-07-28 16:17:59,253 - model.pytorch.dcrnn_supervisor - INFO - Log directory: data/model
+2021-07-28 16:17:59,770 - model.pytorch.dcrnn_supervisor - INFO - Model created
+2021-07-28 16:22:03,207 - model.pytorch.dcrnn_supervisor - INFO - Log directory: data/model
+2021-07-28 16:22:03,676 - model.pytorch.dcrnn_supervisor - INFO - Model created
+2021-07-28 16:26:04,756 - model.pytorch.dcrnn_supervisor - INFO - Log directory: data/model
+2021-07-28 16:26:05,206 - model.pytorch.dcrnn_supervisor - INFO - Model created
+2021-07-28 16:26:26,044 - model.pytorch.dcrnn_supervisor - INFO - Log directory: data/model
+2021-07-28 16:26:26,473 - model.pytorch.dcrnn_supervisor - INFO - Model created
+2021-07-28 16:26:58,843 - model.pytorch.dcrnn_supervisor - INFO - Log directory: data/model
+2021-07-28 16:26:59,268 - model.pytorch.dcrnn_supervisor - INFO - Model created
+2021-07-28 16:26:59,268 - model.pytorch.dcrnn_supervisor - INFO - Start training ...
+2021-07-28 16:26:59,268 - model.pytorch.dcrnn_supervisor - INFO - num_batches:375
+2021-07-28 16:28:09,129 - model.pytorch.dcrnn_supervisor - INFO - Log directory: data/model
+2021-07-28 16:28:09,566 - model.pytorch.dcrnn_supervisor - INFO - Model created
+2021-07-28 16:28:09,566 - model.pytorch.dcrnn_supervisor - INFO - Start training ...
+2021-07-28 16:28:09,566 - model.pytorch.dcrnn_supervisor - INFO - num_batches:375
+2021-07-28 16:28:55,702 - model.pytorch.dcrnn_supervisor - INFO - Log directory: data/model
+2021-07-28 16:28:56,134 - model.pytorch.dcrnn_supervisor - INFO - Model created
+2021-07-28 16:28:56,135 - model.pytorch.dcrnn_supervisor - INFO - Start training ...
+2021-07-28 16:28:56,135 - model.pytorch.dcrnn_supervisor - INFO - num_batches:375
+2021-07-28 16:29:19,795 - model.pytorch.dcrnn_supervisor - INFO - epoch complete
+2021-07-28 16:29:19,796 - model.pytorch.dcrnn_supervisor - INFO - evaluating now!
+2021-07-28 16:29:21,118 - model.pytorch.dcrnn_supervisor - INFO - Epoch [0/100] (375) train_mae: 0.2143, val_mae: 0.2839, lr: 0.010000, 25.0s
+2021-07-28 16:29:21,119 - model.pytorch.dcrnn_supervisor - INFO - Saved model at 0
+2021-07-28 16:29:21,119 - model.pytorch.dcrnn_supervisor - INFO - Val loss decrease from inf to 0.2839, saving to models/epo0.tar
+2021-07-29 00:43:13,366 - model.pytorch.dcrnn_supervisor - INFO - Log directory: data/model
+2021-07-29 00:43:13,841 - model.pytorch.dcrnn_supervisor - INFO - Model created
+2021-07-29 00:43:13,841 - model.pytorch.dcrnn_supervisor - INFO - Start training ...
+2021-07-29 00:43:13,842 - model.pytorch.dcrnn_supervisor - INFO - num_batches:375
+2021-07-29 00:43:38,965 - model.pytorch.dcrnn_supervisor - INFO - epoch complete
+2021-07-29 00:43:38,967 - model.pytorch.dcrnn_supervisor - INFO - evaluating now!
+2021-07-29 00:43:40,314 - model.pytorch.dcrnn_supervisor - INFO - Epoch [0/100] (375) train_mae: 0.1905, val_mae: 0.2474, lr: 0.010000, 26.5s
+2021-07-29 00:43:40,316 - model.pytorch.dcrnn_supervisor - INFO - Saved model at 0
+2021-07-29 00:43:40,316 - model.pytorch.dcrnn_supervisor - INFO - Val loss decrease from inf to 0.2474, saving to models/epo0.tar
+2021-08-02 10:05:58,065 - __main__ - INFO - Log directory: data/model
+2021-08-02 10:05:58,552 - __main__ - INFO - Model created
+2021-08-02 10:05:58,552 - __main__ - INFO - Start training ...
+2021-08-02 10:05:58,552 - __main__ - INFO - num_batches:375
+2021-08-02 10:06:22,293 - __main__ - INFO - Log directory: data/model
+2021-08-02 10:06:22,758 - __main__ - INFO - Model created
+2021-08-02 10:06:22,758 - __main__ - INFO - Start training ...
+2021-08-02 10:06:22,758 - __main__ - INFO - num_batches:375
+2021-08-02 10:06:45,136 - __main__ - INFO - epoch complete
+2021-08-02 10:06:45,139 - __main__ - INFO - evaluating now!
+2021-08-02 10:06:46,401 - __main__ - INFO - Epoch [0/100] (375) train_mae: 0.1775, val_mae: 0.2511, lr: 0.010000, 23.6s
+2021-08-02 10:06:46,404 - __main__ - INFO - Saved model at 0
+2021-08-02 10:06:46,404 - __main__ - INFO - Val loss decrease from inf to 0.2511, saving to models/epo0.tar
+2021-08-02 10:29:39,168 - __main__ - INFO - Log directory: data/model
+2021-08-02 10:29:39,688 - __main__ - INFO - Model created
+2021-08-02 10:29:39,689 - __main__ - INFO - Start training ...
+2021-08-02 10:29:39,689 - __main__ - INFO - num_batches:375
+2021-08-02 10:30:04,464 - __main__ - INFO - epoch complete
+2021-08-02 10:30:04,466 - __main__ - INFO - evaluating now!
+2021-08-02 10:30:23,752 - __main__ - INFO - Log directory: data/model
+2021-08-02 10:30:24,243 - __main__ - INFO - Model created
+2021-08-02 10:30:24,244 - __main__ - INFO - Start training ...
+2021-08-02 10:30:24,244 - __main__ - INFO - num_batches:375
+2021-08-02 10:30:48,152 - __main__ - INFO - epoch complete
+2021-08-02 10:30:48,153 - __main__ - INFO - evaluating now!
+2021-08-02 10:31:11,893 - __main__ - INFO - epoch complete
+2021-08-02 10:31:11,893 - __main__ - INFO - evaluating now!
+2021-08-02 10:31:35,413 - __main__ - INFO - epoch complete
+2021-08-02 10:31:35,413 - __main__ - INFO - evaluating now!
+2021-08-02 10:31:59,002 - __main__ - INFO - epoch complete
+2021-08-02 10:31:59,002 - __main__ - INFO - evaluating now!
+2021-08-02 10:32:22,567 - __main__ - INFO - epoch complete
+2021-08-02 10:32:22,567 - __main__ - INFO - evaluating now!
+2021-08-02 10:32:46,064 - __main__ - INFO - epoch complete
+2021-08-02 10:32:46,064 - __main__ - INFO - evaluating now!
+2021-08-02 10:33:09,755 - __main__ - INFO - epoch complete
+2021-08-02 10:33:09,755 - __main__ - INFO - evaluating now!
+2021-08-02 10:33:33,316 - __main__ - INFO - epoch complete
+2021-08-02 10:33:33,317 - __main__ - INFO - evaluating now!
+2021-08-02 10:34:39,669 - __main__ - INFO - Log directory: data/model
+2021-08-02 10:34:40,175 - __main__ - INFO - Model created
+2021-08-02 10:34:40,175 - __main__ - INFO - Start training ...
+2021-08-02 10:34:40,175 - __main__ - INFO - num_batches:375
+2021-08-02 10:35:02,718 - __main__ - INFO - epoch complete
+2021-08-02 10:35:02,720 - __main__ - INFO - evaluating now!
