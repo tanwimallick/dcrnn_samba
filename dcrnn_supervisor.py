@@ -133,6 +133,13 @@ def addYamlToParser(parser: argparse.ArgumentParser, section='data'):
         parser.add_argument('--max_grad_norm', default=supervisor_config.get('max_grad_norm'), type=int)
         parser.add_argument('--lr_decay_ratio', default=supervisor_config.get('lr_decay_ratio'), type=float)
         parser.add_argument('--dataset_dir', default=supervisor_config.get('dataset_dir'), type=str)
+        parser.add_argument('--max_diffusion_step', default=supervisor_config.get('max_diffusion_step'), type=int)
+        parser.add_argument('--cl_decay_steps', default=supervisor_config.get('cl_decay_steps'), type=int)
+        parser.add_argument('--filter_type', default=supervisor_config.get('filter_type'), type=str)
+        parser.add_argument('--num_rnn_layers', default=supervisor_config.get('num_rnn_layers'), type=int)
+        parser.add_argument('--rnn_units', default=supervisor_config.get('rnn_units'), type=str)
+
+
 
 def add_run_args(parser: argparse.ArgumentParser):
     with open('data/model/dcrnn_la_new.yaml') as f:
@@ -171,11 +178,17 @@ def main(argv):
         base_lr = args.base_lr
         max_grad_norm = args.max_grad_norm
         lr_decay_ratio = args.lr_decay_ratio
+        max_diffusion_step = args.max_diffusion_step
+        cl_decay_steps = args.cl_decay_steps
+        filter_type = args.filter_type
+        num_rnn_layers = args.num_rnn_layers
+        rnn_units = args.rnn_units
 
         _data = utils.load_dataset(dataset_dir, batch_size, test_batch_size)
         standard_scaler = _data['scaler']
 
-        dcrnn_model = DCRNNModel(adj_mx) 
+        dcrnn_model = DCRNNModel(adj_mx, max_diffusion_step, cl_decay_steps, filter_type, num_nodes,
+                 num_rnn_layers, rnn_units, output_dim, horizon, input_dim, seq_len) 
         dcrnn_model = dcrnn_model.cuda() if torch.cuda.is_available() else dcrnn_model
 
         optimizer = sambaflow.samba.optim.SGD(dcrnn_model.parameters(), lr=base_lr)#, eps=epsilon)
