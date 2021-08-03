@@ -12,23 +12,26 @@ def count_parameters(model):
 
 
 class Seq2SeqAttrs:
-    def __init__(self, adj_mx): #, **model_kwargs):
+    def __init__(self, adj_mx, max_diffusion_step, cl_decay_steps, filter_type, num_nodes,
+                 num_rnn_layers, rnn_units): 
         self.adj_mx = adj_mx
-        self.max_diffusion_step = 2 #int(model_kwargs.get('max_diffusion_step', 2))
-        self.cl_decay_steps = 2000 #int(model_kwargs.get('cl_decay_steps', 1000))
-        self.filter_type =  'laplacian '#model_kwargs.get('filter_type', 'laplacian')
-        self.num_nodes = 10 #int(model_kwargs.get('num_nodes', 1))
-        self.num_rnn_layers = 2 #int(model_kwargs.get('num_rnn_layers', 1))
-        self.rnn_units = 4 #int(model_kwargs.get('rnn_units'))
+        self.max_diffusion_step = max_diffusion_step 
+        self.cl_decay_steps = cl_decay_steps 
+        self.filter_type =  filter_type 
+        self.num_nodes = num_nodes 
+        self.num_rnn_layers = num_rnn_layers 
+        self.rnn_units = rnn_units 
         self.hidden_state_size = self.num_nodes * self.rnn_units
 
 
 class EncoderModel(nn.Module, Seq2SeqAttrs):
-    def __init__(self, adj_mx): #, **model_kwargs):
+    def __init__(self, adj_mx, input_dim, seq_len, max_diffusion_step, cl_decay_steps, filter_type, num_nodes,
+                 num_rnn_layers, rnn_units): 
         nn.Module.__init__(self)
-        Seq2SeqAttrs.__init__(self, adj_mx)#, **model_kwargs)
-        self.input_dim = 2 #int(model_kwargs.get('input_dim', 1))
-        self.seq_len = 12 #int(model_kwargs.get('seq_len'))  # for the encoder
+        Seq2SeqAttrs.__init__(self, adj_mx, max_diffusion_step, cl_decay_steps, filter_type, num_nodes,
+                 num_rnn_layers, rnn_units)
+        self.input_dim = input_dim 
+        self.seq_len = seq_len 
         self.dcgru_layers = nn.ModuleList(
             [DCGRUCell(self.rnn_units, adj_mx, self.max_diffusion_step, self.num_nodes,
                        filter_type=self.filter_type) for _ in range(self.num_rnn_layers)])
@@ -59,12 +62,14 @@ class EncoderModel(nn.Module, Seq2SeqAttrs):
 
 
 class DecoderModel(nn.Module, Seq2SeqAttrs):
-    def __init__(self, adj_mx): #, **model_kwargs):
+    def __init__(self, adj_mx, output_dim, horizon, max_diffusion_step, cl_decay_steps, filter_type, num_nodes,
+                 num_rnn_layers, rnn_units): 
         # super().__init__(is_training, adj_mx, **model_kwargs)
         nn.Module.__init__(self)
-        Seq2SeqAttrs.__init__(self, adj_mx) #, **model_kwargs)
-        self.output_dim = 1 #int(model_kwargs.get('output_dim', 1))
-        self.horizon = 12 #int(model_kwargs.get('horizon', 1))  # for the decoder
+        Seq2SeqAttrs.__init__(self, adj_mx, max_diffusion_step, cl_decay_steps, filter_type, num_nodes,
+                 num_rnn_layers, rnn_units) 
+        self.output_dim = output_dim 
+        self.horizon = horizon 
         self.projection_layer = nn.Linear(self.rnn_units, self.output_dim)
         self.dcgru_layers = nn.ModuleList(
             [DCGRUCell(self.rnn_units, adj_mx, self.max_diffusion_step, self.num_nodes,
@@ -95,12 +100,16 @@ class DecoderModel(nn.Module, Seq2SeqAttrs):
 
 
 class DCRNNModel(nn.Module, Seq2SeqAttrs):
-    def __init__(self, adj_mx): #, logger, **model_kwargs):
+    def __init__(self, adj_mx, max_diffusion_step, cl_decay_steps, filter_type, num_nodes,
+                 num_rnn_layers, rnn_units, output_dim, horizon, input_dim, seq_len): #, logger, **model_kwargs):
         super().__init__()
-        Seq2SeqAttrs.__init__(self, adj_mx) # , **model_kwargs)
-        self.encoder_model = EncoderModel(adj_mx) #, **model_kwargs)
-        self.decoder_model = DecoderModel(adj_mx) #, **model_kwargs)
-        self.cl_decay_steps = 2000 #int(model_kwargs.get('cl_decay_steps', 1000))
+        Seq2SeqAttrs.__init__(self, adj_mx, max_diffusion_step, cl_decay_steps, filter_type, num_nodes,
+                 num_rnn_layers, rnn_units) # , **model_kwargs)
+        self.encoder_model = EncoderModel(adj_mx, input_dim, seq_len, max_diffusion_step, cl_decay_steps, filter_type, num_nodes,
+                 num_rnn_layers, rnn_units) #, **model_kwargs)
+        self.decoder_model = DecoderModel(adj_mx, output_dim, horizon, max_diffusion_step, cl_decay_steps, filter_type, num_nodes,
+                 num_rnn_layers, rnn_units) #, **model_kwargs)
+        self.cl_decay_steps = cl_decay_steps #int(model_kwargs.get('cl_decay_steps', 1000))
         self.use_curriculum_learning = True #bool(model_kwargs.get('use_curriculum_learning', False))
         #self._logger = logger
 
