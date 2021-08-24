@@ -125,7 +125,8 @@ class DCRNNModel(nn.Module, Seq2SeqAttrs):
         """
         encoder_hidden_state = None
         for t in range(self.encoder_model.seq_len):
-            _, encoder_hidden_state = self.encoder_model(inputs[t], encoder_hidden_state)
+            _, encoder_hidden_state = self.encoder_model(inputs[:,t,:], encoder_hidden_state)
+            #_, encoder_hidden_state = self.encoder_model(inputs[t], encoder_hidden_state)
 
         return encoder_hidden_state
 
@@ -150,11 +151,12 @@ class DCRNNModel(nn.Module, Seq2SeqAttrs):
                                                                       decoder_hidden_state)
             decoder_input = decoder_output
             outputs.append(decoder_output)
-            if self.training and self.use_curriculum_learning:
-                c = np.random.uniform(0, 1)
-                if c < self._compute_sampling_threshold(batches_seen):
-                    decoder_input = labels[t]
-        outputs = torch.stack(outputs)
+            # if self.training and self.use_curriculum_learning:
+            #     c = np.random.uniform(0, 1)
+            #     if c < self._compute_sampling_threshold(batches_seen):
+            #         decoder_input = labels[t]
+        #outputs = torch.stack(outputs)
+        outputs = torch.stack(outputs, dim=1)
         return outputs
 
     def forward(self, inputs, labels=None, batches_seen=None):
