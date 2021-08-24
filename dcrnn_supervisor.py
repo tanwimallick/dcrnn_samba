@@ -102,7 +102,14 @@ def train(dcrnn_model: nn.Module, _data: dict, optimizer: samba.optim.SGD, horiz
         for _, (x, y) in enumerate(train_iterator):
             optimizer.zero_grad()
 
-            x, y = _prepare_data(x, y, horizon, seq_len, num_nodes, input_dim, output_dim)
+            batch_size = 64
+            x = torch.from_numpy(x).float()
+            y = torch.from_numpy(y).float()
+            x = x.view(batch_size, seq_len,num_nodes * input_dim)
+            y = y[..., :output_dim].view(batch_size,horizon, 
+                                                num_nodes * output_dim)
+
+            #x, y = _prepare_data(x, y, horizon, seq_len, num_nodes, input_dim, output_dim)
 
             s_x = samba.from_torch(x, name ='x_data', batch_dim = 0).float()
             s_y = samba.from_torch(y, name ='y_data', batch_dim = 0).float()
@@ -149,8 +156,8 @@ def add_run_args(parser: argparse.ArgumentParser):
 
 def get_inputs() -> Tuple[samba.SambaTensor, samba.SambaTensor]:
         #placeholder?
-    x = samba.randn(12, 64, 414, name='x_data', batch_dim=0)
-    y = samba.randn(12, 64, 207, name='y_data', batch_dim=0)
+    x = samba.randn( 64, 12, 20, name='x_data', batch_dim=0)
+    y = samba.randn( 64, 12, 10, name='y_data', batch_dim=0)
     return x, y
 
 def main(argv):
@@ -191,7 +198,9 @@ def main(argv):
                  num_rnn_layers, rnn_units, output_dim, horizon, input_dim, seq_len) 
         dcrnn_model = dcrnn_model.cuda() if torch.cuda.is_available() else dcrnn_model
 
-        optimizer = sambaflow.samba.optim.SGD(dcrnn_model.parameters(), lr=base_lr)#, eps=epsilon)
+        # optimizer = sambaflow.samba.optim.SGD(dcrnn_model.parameters(), lr=base_lr)#, eps=epsilon)
+        optimizer = samba.optim.AdamW(model.parameters(), lr=base_lr, eps= epsilon)
+
 
         samba.from_torch_(dcrnn_model)
         inputs = get_inputs()
