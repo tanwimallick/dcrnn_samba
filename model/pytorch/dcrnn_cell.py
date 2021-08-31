@@ -2,7 +2,7 @@ import numpy as np
 import torch
 
 from lib import utils
-
+from sambaflow import samba
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -31,7 +31,6 @@ class LayerParams:
                                                  biases)
 
         return self._biases_dict[length]
-
 
 class DCGRUCell(torch.nn.Module):
     def __init__(self, num_units, adj_mx, max_diffusion_step, num_nodes, nonlinearity='tanh',
@@ -99,9 +98,11 @@ class DCGRUCell(torch.nn.Module):
         r = torch.reshape(r, (-1, self._num_nodes * self._num_units))
         u = torch.reshape(u, (-1, self._num_nodes * self._num_units))
 
-        c = self._gconv(inputs, r * hx, self._num_units)
-        if self._activation is not None:
-            c = self._activation(c)
+        #print('r * hx', r.size(), hx.size())
+        product = r * hx
+        c = self._gconv(inputs, product, self._num_units)
+        #if self._activation is not None:
+        c = self._activation(c)
 
         new_state = u * hx + (1.0 - u) * c
         return new_state
@@ -113,6 +114,7 @@ class DCGRUCell(torch.nn.Module):
 
     def _fc(self, inputs, state, output_size, bias_start=0.0):
         batch_size = inputs.shape[0]
+        #print('self._num_nodes:', self._num_nodes)
         inputs = torch.reshape(inputs, (batch_size * self._num_nodes, -1))
         state = torch.reshape(state, (batch_size * self._num_nodes, -1))
         inputs_and_state = torch.cat([inputs, state], dim=-1)
@@ -126,37 +128,47 @@ class DCGRUCell(torch.nn.Module):
     def _gconv(self, inputs, state, output_size, bias_start=0.0):
         # Reshape input and state to (batch_size, num_nodes, input_dim/state_dim)
         batch_size = inputs.shape[0]
+        print('self._num_nodes:', self._num_nodes)
         inputs = torch.reshape(inputs, (batch_size, self._num_nodes, -1))
         state = torch.reshape(state, (batch_size, self._num_nodes, -1))
+        state = samba.from_torch(state, name ='state', batch_dim = 0).float()
         inputs_and_state = torch.cat([inputs, state], dim=2)
         input_size = inputs_and_state.size(2)
 
         x = inputs_and_state
         x0 = x.permute(1, 2, 0)  # (num_nodes, total_arg_size, batch_size)
-        x0 = torch.reshape(x0, shape=[self._num_nodes, input_size * batch_size])
+        x0 = torch.reshape(x0, (self._num_nodes, input_size * batch_size))
+        #x0 = torch.reshape(x0, shape=[self._num_nodes, input_size * batch_size])
         x = torch.unsqueeze(x0, 0)
 
-        if self._max_diffusion_step == 0:
-            pass
-        else:
-            for support in self._supports:
-                x1 = torch.sparse.mm(support, x0)
-                x = self._concat(x, x1)
+        #if self._max_diffusion_step == 0:
+        #    pass
+        #else:
+        for support in self._supports:
+            support = samba.from_torch(support, name ='support', batch_dim = 0).float()
+            x1 = torch.matmul(support, x0)
+            #x1 = torch.sparse.mm(support, x0) 
+            x = self._concat(x, x1)
 
-                for k in range(2, self._max_diffusion_step + 1):
-                    x2 = 2 * torch.sparse.mm(support, x1) - x0
-                    x = self._concat(x, x2)
-                    x1, x0 = x2, x1
+            for k in range(2, self._max_diffusion_step + 1):
+                x2 = 2 * torch.matmul(support, x1) - x0
+                #x2 = 2 * torch.sparse.mm(support, x1) - x0
+                x = self._concat(x, x2)
+                x1, x0 = x2, x1
 
         num_matrices = len(self._supports) * self._max_diffusion_step + 1  # Adds for x itself.
-        x = torch.reshape(x, shape=[num_matrices, self._num_nodes, input_size, batch_size])
+        x = torch.reshape(x, (num_matrices, self._num_nodes, input_size, batch_size))
+        # x = torch.reshape(x, shape=[num_matrices, self._num_nodes, input_size, batch_size])
         x = x.permute(3, 1, 2, 0)  # (batch_size, num_nodes, input_size, order)
-        x = torch.reshape(x, shape=[batch_size * self._num_nodes, input_size * num_matrices])
+        x = torch.reshape(x, (batch_size * self._num_nodes, input_size * num_matrices))
+        #x = torch.reshape(x, shape=[batch_size * self._num_nodes, input_size * num_matrices])
 
         weights = self._gconv_params.get_weights((input_size * num_matrices, output_size))
+        weights = samba.from_torch(weights, name ='weights', batch_dim = 0).float()
         x = torch.matmul(x, weights)  # (batch_size * self._num_nodes, output_size)
 
         biases = self._gconv_params.get_biases(output_size, bias_start)
         x += biases
         # Reshape res back to 2D: (batch_size, num_node, state_dim) -> (batch_size, num_node * state_dim)
-        return torch.reshape(x, [batch_size, self._num_nodes * output_size])
+        return torch.reshape(x, (batch_size, self._num_nodes * output_size))
+                                                                                                                                                   138,0-1       72%
